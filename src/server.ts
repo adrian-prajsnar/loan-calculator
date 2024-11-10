@@ -1,67 +1,21 @@
-import { NextFunction, Request, Response } from 'express'
 import app from './app'
-import { LoanRequest } from './types/Loan'
-import { fetchReferenceRate } from './utils/data-service'
+import { initDbConnection } from './db/db'
 
-app.get('/', (req, res) => {
-    res.send('GET Request called')
-})
+async function main() {
+    try {
+        const connection = await initDbConnection()
 
-app.post(
-    '/api/v1/loan',
-    async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const loanData: LoanRequest = {
-                allInstallments: req.body.allInstallments,
-                remainingInstallments: req.body.remainingInstallments,
-                installmentAmount: req.body.installmentAmount,
-                financingAmount: req.body.financingAmount,
-                interestRate: req.body.interestRate,
-            }
+        const [rows] = await connection.query('SELECT 1 + 1 AS result')
+        console.log('Query result:', rows)
 
-            const {
-                allInstallments,
-                remainingInstallments,
-                installmentAmount,
-                financingAmount,
-                interestRate,
-            } = loanData
-
-            const referenceRate = await fetchReferenceRate()
-            const referenceRateDownloadDate: Date = new Date()
-
-            console.log(referenceRate, referenceRateDownloadDate)
-
-            if (interestRate > referenceRate)
-                res.status(200).json({
-                    status: 'success',
-                    message: 'Interest rate is bigger than reference rate',
-                })
-            else {
-                const newContractLoanAmount: number = parseFloat(
-                    (
-                        remainingInstallments *
-                        installmentAmount *
-                        (referenceRate / 100 + 1)
-                    ).toFixed(2)
-                )
-
-                const newInstallmentAmount: number = parseFloat(
-                    (installmentAmount * (referenceRate / 100 + 1)).toFixed(2)
-                )
-
-                console.log(newContractLoanAmount)
-                console.log(newInstallmentAmount)
-
-                res.status(200).json({
-                    status: 'success',
-                    entity: loanData,
-                })
-            }
-        } catch (error) {
-            next(error)
-        }
+        await connection.end()
+    } catch (error) {
+        console.error('Error:', error)
     }
-)
+}
 
-app.listen(3000, () => console.log('App listening on port 3000'))
+main()
+
+app.listen(process.env.PORT, () =>
+    console.log(`App listening on port ${process.env.PORT}`)
+)
