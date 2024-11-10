@@ -1,21 +1,21 @@
 import app from './app'
-import { initDbConnection } from './db/db'
 
-async function main() {
-    try {
-        const connection = await initDbConnection()
+// async function main() {
+//     try {
+//         const connection = await connectToDatabase()
 
-        const [rows] = await connection.query('SELECT 1 + 1 AS result')
-        console.log('Query result:', rows)
+//         const [rows] = await connection.query('SELECT 1 + 1 AS result')
+//         console.log('Query result:', rows)
 
-        await connection.end()
-    } catch (error) {
-        console.error('Error:', error)
-    }
-}
+//         connection.end()
+//     } catch (error) {
+//         console.error('Error:', error)
+//     }
+// }
 
-main()
+// main()
 
-app.listen(process.env.PORT, () =>
-    console.log(`App listening on port ${process.env.PORT}`)
-)
+const port = process.env.PORT || 3000
+app.listen(port, () => {
+    console.log(`App running on port ${port}...`)
+})

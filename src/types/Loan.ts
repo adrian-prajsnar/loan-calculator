@@ -1,4 +1,4 @@
-export type LoanRequest = {
+export type LoanEntity = {
     allInstallments: number
     remainingInstallments: number
     installmentAmount: number
@@ -6,4 +6,11 @@ export type LoanRequest = {
     interestRate: number
 }
 
-export type LoanResponse = {}
+export type UpdatedLoanEntity = {
+    allInstallments: number
+    remainingInstallments: number
+    installmentAmount: number
+    financingAmount: number
+    interestRate: number
+    remainingLoanToPay: number
+}

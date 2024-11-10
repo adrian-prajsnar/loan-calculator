@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
-import { LoanRequest } from '../types/Loan'
+import { LoanEntity, UpdatedLoanEntity } from '../types/Loan'
 import { fetchReferenceRate } from '../utils/data-service'
 import sendEmail from '../utils/email'
+import { connect, query } from '../db/db'
 
 export async function countLoan(
     req: Request,
@@ -9,7 +10,7 @@ export async function countLoan(
     next: NextFunction
 ) {
     try {
-        const data: LoanRequest = {
+        const loanData: LoanEntity = {
             allInstallments: req.body.allInstallments,
             remainingInstallments: req.body.remainingInstallments,
             installmentAmount: req.body.installmentAmount,
@@ -17,17 +18,30 @@ export async function countLoan(
             interestRate: req.body.interestRate,
         }
 
-        const { remainingInstallments, installmentAmount, interestRate } = data
+        const { remainingInstallments, installmentAmount, interestRate } =
+            loanData
 
         const referenceRate: number = await fetchReferenceRate()
-        const referenceRateDownloadDate: Date = new Date()
 
+        const referenceRateDownloadDate = new Date()
+            .toISOString()
+            .slice(0, 19)
+            .replace('T', ' ')
+
+        insertDataToReferenceRateTable(referenceRateDownloadDate, referenceRate)
         if (interestRate > referenceRate)
             res.status(200).json({
                 status: 'success',
                 message: 'Interest rate is bigger than reference rate',
             })
         else {
+            if (installmentAmount <= 0)
+                sendEmail({
+                    email: 'test@gmail.com',
+                    subject: 'TEST',
+                    message: 'xyzzxczczccz...',
+                })
+
             const newContractLoanAmount: number = parseFloat(
                 (
                     remainingInstallments *
@@ -40,19 +54,47 @@ export async function countLoan(
                 (installmentAmount * (referenceRate / 100 + 1)).toFixed(2)
             )
 
-            if (newInstallmentAmount <= 0)
-                sendEmail({
-                    email: 'test@gmail.com',
-                    subject: 'TEST',
-                    message: 'xyzzxczczccz...',
-                })
+            const newCountedLoanData: UpdatedLoanEntity = {
+                ...loanData,
+                installmentAmount: newInstallmentAmount,
+                remainingLoanToPay: newContractLoanAmount,
+            }
+            insertDataToTable(newCountedLoanData)
 
             res.status(200).json({
                 status: 'success',
-                entity: data,
+                entity: newCountedLoanData,
             })
         }
     } catch (error) {
         next(error)
+    }
+}
+async function insertDataToReferenceRateTable(
+    creationDate: string,
+    referenceRate: number
+) {
+    try {
+        const connection = await connect()
+
+        const queryString = `INSERT INTO ReferenceRate (creationDate, referenceRate) VALUES ("${creationDate}", "${referenceRate}")`
+
+        await query(connection, queryString)
+        connection.end()
+    } catch (error) {
+        console.error('Error:', error)
+    }
+}
+
+async function insertDataToTable(loanData: UpdatedLoanEntity) {
+    try {
+        const connection = await connect()
+
+        const queryString = `INSERT INTO Loan (allInstallments, remainingInstallments, installmentAmount, financingAmount, interestRate, remainingLoan) VALUES ("${loanData.allInstallments}", "${loanData.remainingInstallments}","${loanData.installmentAmount}","${loanData.financingAmount}","${loanData.interestRate}","${loanData.remainingLoanToPay}")`
+
+        await query(connection, queryString)
+        connection.end()
+    } catch (error) {
+        console.error('Error:', error)
     }
 }
