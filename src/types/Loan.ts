@@ -1,12 +1,13 @@
-export type LoanEntity = {
+type LoanEntity = {
     allInstallments: number
     remainingInstallments: number
     installmentAmount: number
     financingAmount: number
     interestRate: number
+    userEmail: string
 }
 
-export type UpdatedLoanEntity = {
+type UpdatedLoanEntity = {
     allInstallments: number
     remainingInstallments: number
     installmentAmount: number
@@ -14,3 +15,5 @@ export type UpdatedLoanEntity = {
     interestRate: number
     remainingLoanToPay: number
 }
+
+export { LoanEntity, UpdatedLoanEntity }
