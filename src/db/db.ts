@@ -3,9 +3,10 @@ import { dbConfig } from './config'
 
 export async function connectToDatabase() {
     try {
+        console.log(dbConfig)
         const connection = await mysql.createConnection(dbConfig)
 
-        console.log('Connected to the MySQL database.')
+        console.log(connection)
         return connection
     } catch (error) {
         console.error('Unable to connect to the database:', error)

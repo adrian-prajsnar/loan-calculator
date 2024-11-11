@@ -30,10 +30,12 @@ async function insertDataToReferenceRateTable(
     referenceRate: number
 ) {
     try {
+        // console.log('1111111111111111111===')
         const connection = await connectToDatabase()
+        // console.log('===============')
 
-        const queryString = `INSERT INTO ReferenceRate (creationDate, referenceRate) VALUES ("${creationDate}", "${referenceRate}")`
-        await queryToDatabase(connection, queryString)
+        // const queryString = `INSERT INTO ReferenceRate (creationDate, referenceRate) VALUES ("${creationDate}", "${referenceRate}")`
+        // await queryToDatabase(connection, queryString)
 
         connection.end()
     } catch (error) {
@@ -43,11 +45,13 @@ async function insertDataToReferenceRateTable(
 
 async function insertDataToTable(loanData: UpdatedLoanEntity) {
     try {
+        console.log('1111111111111111111===')
         const connection = await connectToDatabase()
+        console.log('===============')
 
-        const queryString = `INSERT INTO Loan (allInstallments, remainingInstallments, installmentAmount, financingAmount, interestRate, remainingLoan) VALUES ("${loanData.allInstallments}", "${loanData.remainingInstallments}","${loanData.installmentAmount}","${loanData.financingAmount}","${loanData.interestRate}","${loanData.remainingLoanToPay}")`
+        // const queryString = `INSERT INTO Loan (allInstallments, remainingInstallments, installmentAmount, financingAmount, interestRate, remainingLoan) VALUES ("${loanData.allInstallments}", "${loanData.remainingInstallments}","${loanData.installmentAmount}","${loanData.financingAmount}","${loanData.interestRate}","${loanData.remainingLoanToPay}")`
 
-        await queryToDatabase(connection, queryString)
+        // await queryToDatabase(connection, queryString)
 
         connection.end()
     } catch (error) {
