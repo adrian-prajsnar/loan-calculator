@@ -1,14 +1,13 @@
 import { NextFunction, Request, Response } from 'express'
 import { LoanEntity, UpdatedLoanEntity } from '../types/Loan'
-import { fetchReferenceRate } from '../utils/data-service'
+import {
+    fetchReferenceRate,
+    insertDataToReferenceRateTable,
+    insertDataToTable,
+} from '../utils/data-service'
 import sendEmail from '../utils/email'
-import { connect, query } from '../db/db'
 
-export async function countLoan(
-    req: Request,
-    res: Response,
-    next: NextFunction
-) {
+async function countLoan(req: Request, res: Response, next: NextFunction) {
     try {
         const loanData: LoanEntity = {
             allInstallments: req.body.allInstallments,
@@ -70,31 +69,5 @@ export async function countLoan(
         next(error)
     }
 }
-async function insertDataToReferenceRateTable(
-    creationDate: string,
-    referenceRate: number
-) {
-    try {
-        const connection = await connect()
 
-        const queryString = `INSERT INTO ReferenceRate (creationDate, referenceRate) VALUES ("${creationDate}", "${referenceRate}")`
-
-        await query(connection, queryString)
-        connection.end()
-    } catch (error) {
-        console.error('Error:', error)
-    }
-}
-
-async function insertDataToTable(loanData: UpdatedLoanEntity) {
-    try {
-        const connection = await connect()
-
-        const queryString = `INSERT INTO Loan (allInstallments, remainingInstallments, installmentAmount, financingAmount, interestRate, remainingLoan) VALUES ("${loanData.allInstallments}", "${loanData.remainingInstallments}","${loanData.installmentAmount}","${loanData.financingAmount}","${loanData.interestRate}","${loanData.remainingLoanToPay}")`
-
-        await query(connection, queryString)
-        connection.end()
-    } catch (error) {
-        console.error('Error:', error)
-    }
-}
+export { countLoan }

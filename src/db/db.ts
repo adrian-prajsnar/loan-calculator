@@ -1,7 +1,7 @@
 import mysql from 'mysql2/promise'
 import { dbConfig } from './config'
 
-export async function connect() {
+export async function connectToDatabase() {
     try {
         const connection = await mysql.createConnection(dbConfig)
 
@@ -13,7 +13,10 @@ export async function connect() {
     }
 }
 
-export async function query(connection: mysql.Connection, queryString: string) {
+export async function queryToDatabase(
+    connection: mysql.Connection,
+    queryString: string
+) {
     try {
         console.log(queryString)
         const data = await connection.query(queryString)
