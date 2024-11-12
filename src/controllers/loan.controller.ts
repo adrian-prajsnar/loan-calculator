@@ -38,7 +38,7 @@ async function countLoan(req: Request, res: Response, next: NextFunction) {
             res.status(400).json({ status: 'error', message: validationError })
         } else if (interestRate > referenceRate)
             res.status(200).json({
-                status: 'success',
+                status: 'info',
                 message:
                     'Interest rate is bigger than reference rate, nothing changed',
             })
