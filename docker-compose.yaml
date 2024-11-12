@@ -12,10 +12,10 @@ services:
     expose:
       - 3306
     environment:
-      MYSQL_DATABASE: bank_loans
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_ROOT_PASSWORD: admin
+      MYSQL_DATABASE: ${DATABASE_NAME}
+      MYSQL_USER: ${DATABASE_USERNAME}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
       SERVICE_TAGS: prod
       SERVICE_NAME: bank-loans-mysqldb
     networks:
@@ -23,7 +23,7 @@ services:
 
   bank-loans-nodeapp:
     container_name: nodeapp-container
-    build: .  
+    build: .
     image: nodeapp:v1
     ports:
       - 3000:3000
@@ -32,17 +32,23 @@ services:
     depends_on:
       - bank-loans-mysqldb
     environment:
-      PORT: 3000  
-      DATABASE_HOST: bank-loans-mysqldb
-      DATABASE_NAME: bank_loans
-      DATABASE_PASSWORD: 'admin'
-      DATABASE_USERNAME: admin
-      EMAIL_USERNAME: 0fa914e31e6ca1
-      EMAIL_PASSWORD: 8fef63bdb60d85
-      EMAIL_HOST: sandbox.smtp.mailtrap.io
-      EMAIL_PORT: 2525
+      PORT: ${PORT}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_USERNAME: ${DATABASE_USERNAME}
+      EMAIL_USERNAME: ${EMAIL_USERNAME}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
       SERVICE_TAGS: prod
       SERVICE_NAME: bank-loans-nodeapp
+    volumes:
+      - .:/app
+      - /app/node_modules
+    x-deploy:
+      file_watcher:
+        watch: true
     networks:
       - internalnet
 

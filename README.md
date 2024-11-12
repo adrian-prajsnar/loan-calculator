@@ -19,6 +19,7 @@ This is a Node.js application for calculating and updating loan status. The proj
     -   [Prerequisites](#prerequisites)
     -   [Installation & Usage](#installation-&-usage)
 -   [Environment Variables](#environment-variables)
+-   [Testing the API](#testing-the-api)
 -   [License](#license)
 
 ## Getting Started
@@ -33,7 +34,7 @@ Make sure you have the following software installed on your system:
 -   npm (Node Package Manager)
 -   Docker Desktop
 -   GNU make chocolatey
--   MySQL database
+-   MySQL 8.0.40
 
 ### Installation & Usage
 
@@ -49,7 +50,7 @@ git clone https://github.com/adrian-prajsnar/loan-calculator.git
 cd your-project
 ```
 
-3. Run Makefile command for Docker (install dependencies, build and start docker container):
+3. To run the development environment and containerized application, use the following make command to install dependencies, build, and start the Docker container:
 
 ```
 make run
@@ -61,9 +62,23 @@ make run
 npm run build
 ```
 
-<!-- ## Environment Variables
+## Environment Variables
 
-They should not be exposed, but for ease of review, the .env file has been committed. -->
+To configure environment variables, follow these steps:
+
+1. Copy the example environment file:
+
+    ```
+    cp .env.example .env
+    ```
+
+2. Fill it with actual data.
+
+## Environment Variables
+
+You can test the API endpoints using Postman. A collection is available for easy testing:
+
+[Count Loan - Postman API](https://www.postman.com/lively-capsule-860220/loan-api/request/gek3s3p/count-loan?action=share&creator=33666853&ctx=documentation)
 
 ## License
 
