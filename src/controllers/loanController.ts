@@ -58,8 +58,9 @@ const countLoan = asyncMiddleware(async (req, res) => {
     else if (installmentAmount <= 0) {
         sendEmail({
             email: userEmail,
-            subject: 'Attention!',
-            message: 'You have provided a negative installment amount.',
+            subject: 'Issue with Your Installment Amount',
+            message:
+                "Dear User. It appears that the installment amount you've entered is not valid. Installments must be a positive amount greater than zero. Please review and update your information to proceed with your loan application If you need assistance, feel free to contact our support team. Best regards, Your Support Team",
         })
         return res.status(400).json({
             status: 'error',
