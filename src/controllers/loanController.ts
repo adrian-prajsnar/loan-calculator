@@ -27,7 +27,6 @@ const countLoan = asyncMiddleware(async (req, res) => {
     } = loanData
 
     const referenceRate: number = await fetchReferenceRate()
-
     const referenceRateDownloadDate = new Date()
         .toISOString()
         .slice(0, 19)
@@ -37,7 +36,7 @@ const countLoan = asyncMiddleware(async (req, res) => {
 
     if (
         Object.values(loanData).some(
-            (value) => value === null || value === undefined
+            (value) => value === null || value === undefined || value === ''
         )
     )
         return res.status(400).json({
@@ -56,12 +55,17 @@ const countLoan = asyncMiddleware(async (req, res) => {
                 'All instalmments, remaining installments, financing amount and interest rate cannot be less or equal 0',
         })
     else if (installmentAmount <= 0) {
-        sendEmail({
-            email: userEmail,
-            subject: 'Issue with Your Installment Amount',
-            message:
-                "Dear User. It appears that the installment amount you've entered is not valid. Installments must be a positive amount greater than zero. Please review and update your information to proceed with your loan application If you need assistance, feel free to contact our support team. Best regards, Your Support Team",
-        })
+        const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+
+        if (emailRegex.test(userEmail))
+            sendEmail({
+                email: userEmail,
+                subject: 'Issue with Your Installment Amount',
+                message:
+                    "Dear User. It appears that the installment amount you've entered is not valid. Installments must be a positive amount greater than zero. Please review and update your information to proceed with your loan application. If you need assistance, feel free to contact our support team. Best regards, Your Support Team",
+            })
+        else console.warn('Invalid email address, skipping email sending.')
+
         return res.status(400).json({
             status: 'error',
             message: 'Installment amount cannot be less or equal 0',
