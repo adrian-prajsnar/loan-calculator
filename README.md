@@ -21,6 +21,7 @@ This is a Node.js application for calculating and updating loan status. The proj
 -   [Environment Variables](#environment-variables)
 -   [Testing the API](#testing-the-api)
     -   [Example API Request](#example-api-request)
+-   [Mail Service (sending email)](#mail-service)
 -   [License](#license)
 
 ## Getting Started
@@ -138,6 +139,10 @@ To test the loan calculation endpoint directly with Postman, use the following c
     ```
 
 After setting this up in Postman, click **Send** to submit the request and test the response from the API.
+
+## Mail service (sending email)
+
+In order to send email, you must use the email service: [mailtrap.io](https://mailtrap.io/). You need to register, create an inbox and fill the project environment variables with host, port, username, password.
 
 ## License
 
