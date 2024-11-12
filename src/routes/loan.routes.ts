@@ -1,5 +1,5 @@
 import express from 'express'
-import { countLoan } from '../controllers/loanController'
+import { countLoan } from '../controllers/loan.controller'
 
 const loanRouter = express.Router()
 

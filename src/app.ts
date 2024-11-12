@@ -1,7 +1,7 @@
 import express from 'express'
 import dotenv from 'dotenv'
 import cors from 'cors'
-import loanRouter from './routes/loanRoutes'
+import loanRouter from './routes/loan.routes'
 
 dotenv.config({
     path: '.env',
